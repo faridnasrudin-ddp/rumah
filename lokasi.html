@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deteksi Lokasi GPS</title>
+</head>
+<body>
+  <h2>Deteksi Lokasi Saya</h2>
+  <p>Klik tombol di bawah untuk membagikan lokasi GPS Anda.</p>
+
+  <button onclick="deteksiLokasi()">Deteksi Lokasi</button>
+  <p id="hasil">Lokasi belum dideteksi.</p>
+
+  <script>
+    function deteksiLokasi() {
+      const hasil = document.getElementById("hasil");
+
+      if (!navigator.geolocation) {
+        hasil.textContent = "Browser tidak mendukung GPS.";
+        return;
+      }
+
+      hasil.textContent = "Meminta izin lokasi...";
+
+      navigator.geolocation.getCurrentPosition(
+        function(posisi) {
+          const lat = posisi.coords.latitude;
+          const lon = posisi.coords.longitude;
+          const akurasi = posisi.coords.accuracy;
+
+          hasil.innerHTML = `
+            <b>Lokasi berhasil dideteksi!</b><br>
+            Latitude: ${lat}<br>
+            Longitude: ${lon}<br>
+            Akurasi: ±${Math.round(akurasi)} meter<br><br>
+            <a href="https://www.google.com/maps?q=${lat},${lon}"
+               target="_blank" rel="noopener">
+              Buka lokasi di Google Maps
+            </a>
+          `;
+        },
+        function(error) {
+          hasil.textContent =
+            "Lokasi gagal dideteksi. Periksa izin lokasi browser Anda.";
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        }
+      );
+    }
+  </script>
+</body>
+</html>
